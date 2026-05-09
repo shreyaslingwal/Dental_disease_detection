@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentiScan Pro - AI Dental Diagnostic Portal</title>
+    <meta name="description" content="AI-powered dental X-ray analysis with GradCAM visualization and clinical report generation. Professional dental disease reporting platform.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <span class="material-symbols-outlined">dentistry</span>
+            </div>
+            <div class="brand-text">
+                <h1>DentiScan</h1>
+                <p>Diagnostic Portal</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-page="dashboard" id="navDashboard">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-page="upload" id="navUpload">
+                <span class="material-symbols-outlined">cloud_upload</span>
+                <span>Upload & Analyze</span>
+            </a>
+            <a href="#" class="nav-item" data-page="records" id="navRecords">
+                <span class="material-symbols-outlined">folder_shared</span>
+                <span>Patient Records</span>
+            </a>
+            <a href="#" class="nav-item" data-page="reports" id="navReports">
+                <span class="material-symbols-outlined">description</span>
+                <span>Clinical Reports</span>
+            </a>
+            <a href="#" class="nav-item" data-page="settings" id="navSettings">
+                <span class="material-symbols-outlined">settings</span>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+    </aside>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header" id="mobileHeader">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="mobile-brand">
+            <span class="material-symbols-outlined">dentistry</span>
+            <span>DentiScan</span>
+        </div>
+        <div class="mobile-user">DS</div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-area" id="mainArea">
+
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <nav class="breadcrumb" id="breadcrumb">
+                    <a href="#" data-page="dashboard">Dashboard</a>
+                </nav>
+            </div>
+            <div class="top-bar-right">
+                <div class="connection-pill" id="connectionPill">
+                    <span class="conn-dot offline" id="connDot"></span>
+                    <span class="conn-text" id="connText">Disconnected</span>
+                </div>
+                <div class="server-input-group" id="serverGroup">
+                    <input type="text" id="serverUrl" placeholder="https://xxxx.ngrok-free.app" spellcheck="false">
+                    <button id="connectBtn" onclick="connectToServer()">Connect</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== PAGE: Dashboard ===================== -->
+        <section class="page active" id="pageDashboard">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">Clinical Dashboard</h2>
+                    <p class="page-subtitle">Overview of recent activity and critical patient findings.</p>
+                </div>
+                <button class="btn-primary" onclick="navigateTo('upload')">
+                    <span class="material-symbols-outlined">add_photo_alternate</span>
+                    New Analysis
+                </button>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon pending">
+                        <span class="material-symbols-outlined">pending_actions</span>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-label">Pending Reviews</span>
+                        <span class="stat-value" id="statPending">0</span>
+                    </div>
+                    <div class="stat-trend" id="trendPending"></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon reports">
+                        <span class="material-symbols-outlined">lab_profile</span>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-label">Reports Generated</span>
+                        <span class="stat-value" id="statReports">0</span>
+                    </div>
+                    <div class="stat-trend" id="trendReports"></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon critical">
+                        <span class="material-symbols-outlined">warning</span>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-label">Critical Findings</span>
+                        <span class="stat-value" id="statCritical">0</span>
+                    </div>
+                    <div class="stat-trend" id="trendCritical"></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon patients">
+                        <span class="material-symbols-outlined">groups</span>
+                    </div>
+                    <div class="stat-body">
+                        <span class="stat-label">Patients Seen</span>
+                        <span class="stat-value" id="statPatients">0</span>
+                    </div>
+                    <div class="stat-trend" id="trendPatients"></div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Latest Analysis Card (dynamic) -->
+                <div class="card case-card" id="latestCaseCard">
+                    <div class="card-header">
+                        <h3>Latest Analysis</h3>
+                    </div>
+                    <div class="card-body" id="latestCaseBody">
+                        <div class="empty-state-inline">
+                            <span class="material-symbols-outlined">biotech</span>
+                            <p>No analyses yet. Upload a dental X-ray to get started.</p>
+                            <button class="btn-primary" onclick="navigateTo('upload')">
+                                <span class="material-symbols-outlined">add_photo_alternate</span>
+                                Analyze New Scan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Reports (dynamic) -->
+                <div class="card reports-card">
+                    <div class="card-header">
+                        <h3>Recent Reports</h3>
+                        <button class="btn-ghost-sm" onclick="navigateTo('records')">View All</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="report-list" id="dashboardReportList">
+                            <div class="empty-state-inline">
+                                <span class="material-symbols-outlined">description</span>
+                                <p>No reports generated yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== PAGE: Upload & Analyze ===================== -->
+        <section class="page" id="pageUpload">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">Upload & Analyze</h2>
+                    <p class="page-subtitle">Securely upload radiographic imagery for automated preliminary analysis.</p>
+                </div>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="upload-container" id="uploadContainer">
+                <div class="upload-card" id="uploadCard">
+                    <div class="upload-dropzone" id="uploadDropzone">
+                        <div class="upload-icon-wrap">
+                            <span class="material-symbols-outlined">cloud_upload</span>
+                        </div>
+                        <h3>Drag and drop dental X-rays here</h3>
+                        <p class="upload-desc">Upload high-resolution Bitewing, Periapical, or Panoramic scans.</p>
+                        <p class="upload-formats">Supported formats: JPEG, PNG, DICOM. Maximum file size: 50MB.</p>
+                        <input type="file" id="fileInput" accept="image/*" hidden>
+                        <button class="btn-primary upload-browse-btn" onclick="document.getElementById('fileInput').click()">
+                            <span class="material-symbols-outlined">folder_open</span>
+                            Browse Files
+                        </button>
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div class="upload-preview" id="uploadPreview" style="display:none;">
+                        <div class="preview-image-wrap">
+                            <img id="previewImage" alt="Uploaded X-ray preview">
+                        </div>
+                        <div class="preview-info-bar">
+                            <div class="file-details">
+                                <span class="material-symbols-outlined">image</span>
+                                <span class="file-name" id="fileName"></span>
+                                <span class="file-size" id="fileSize"></span>
+                            </div>
+                            <div class="preview-actions">
+                                <button class="btn-primary analyze-btn" id="analyzeBtn" onclick="analyzeImage()">
+                                    <span class="material-symbols-outlined">biotech</span>
+                                    <span class="btn-text">Run Analysis</span>
+                                    <span class="btn-loader" style="display:none;"></span>
+                                </button>
+                                <button class="btn-ghost" onclick="resetUpload()">
+                                    <span class="material-symbols-outlined">close</span>
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scan Metadata -->
+                <div class="metadata-card" id="metadataCard">
+                    <div class="card-header">
+                        <h3>Scan Metadata</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="patientId">Patient ID</label>
+                            <input type="text" id="patientId" placeholder="e.g., PT-88291">
+                        </div>
+                        <div class="form-group">
+                            <label for="scanType">Scan Type</label>
+                            <select id="scanType">
+                                <option value="">Select scan type...</option>
+                                <option value="panoramic">Panoramic (OPG)</option>
+                                <option value="bitewing">Bitewing</option>
+                                <option value="periapical">Periapical</option>
+                                <option value="cbct">CBCT</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="clinicalNotes">Clinical Notes</label>
+                            <textarea id="clinicalNotes" rows="3" placeholder="Add any relevant clinical observations..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-container" id="resultsContainer" style="display:none;">
+                <!-- Visualization Panels (Phase 2 style: horizontal scroll) -->
+                <div class="card viz-panels-card">
+                    <div class="card-header">
+                        <h3>Diagnostic Visualization</h3>
+                        <span class="chip chip-ai">AI Generated</span>
+                    </div>
+                    <div class="card-body viz-scroll-wrap">
+                        <div class="viz-scroll-track" id="vizPanelsTrack">
+                            <!-- Dynamically populated by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confidence Scores -->
+                <div class="card" id="scoresCard">
+                    <div class="card-header">
+                        <h3>Detection Confidence</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="scores-grid" id="scoresGrid"></div>
+                    </div>
+                </div>
+
+                <!-- Clinical Report -->
+                <div class="card report-card">
+                    <div class="card-header">
+                        <h3>Clinical Diagnostic Report</h3>
+                        <div class="header-actions">
+                            <button class="btn-icon" onclick="copyReport()" title="Copy report">
+                                <span class="material-symbols-outlined">content_copy</span>
+                            </button>
+                            <button class="btn-icon" title="Download PDF">
+                                <span class="material-symbols-outlined">download</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="report-content-area" id="reportContent"></div>
+                    </div>
+                </div>
+
+                <!-- New Analysis -->
+                <div class="results-footer">
+                    <button class="btn-secondary" onclick="newAnalysis()">
+                        <span class="material-symbols-outlined">restart_alt</span>
+                        New Analysis
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== PAGE: Placeholder Pages ===================== -->
+        <section class="page" id="pageRecords">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">Patient Records</h2>
+                    <p class="page-subtitle">Browse previous analyses and diagnostic history.</p>
+                </div>
+                <div class="records-actions">
+                    <button class="btn-ghost" onclick="clearAllRecords()">
+                        <span class="material-symbols-outlined">delete_sweep</span>
+                        Clear All
+                    </button>
+                    <button class="btn-primary" onclick="navigateTo('upload')">
+                        <span class="material-symbols-outlined">add_photo_alternate</span>
+                        New Analysis
+                    </button>
+                </div>
+            </div>
+            <div id="recordsList">
+                <div class="empty-state" id="recordsEmpty">
+                    <span class="material-symbols-outlined">folder_shared</span>
+                    <h3>No Records Yet</h3>
+                    <p>Completed analyses will appear here automatically.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="page" id="pageReports">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">Clinical Reports</h2>
+                    <p class="page-subtitle">Access and manage all generated clinical diagnostic reports.</p>
+                </div>
+            </div>
+            <div class="empty-state">
+                <span class="material-symbols-outlined">description</span>
+                <h3>Clinical Reports Archive</h3>
+                <p>Reports archive and management will be available in a future update.</p>
+            </div>
+        </section>
+
+        <section class="page" id="pageSettings">
+            <div class="page-header">
+                <div>
+                    <h2 class="page-title">Settings</h2>
+                    <p class="page-subtitle">Configure your diagnostic portal preferences.</p>
+                </div>
+            </div>
+            <div class="empty-state">
+                <span class="material-symbols-outlined">settings</span>
+                <h3>Settings</h3>
+                <p>Portal settings will be available in a future update.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display:none;">
+        <div class="loading-card">
+            <div class="loading-spinner"></div>
+            <h3>Analyzing Radiograph</h3>
+            <p class="loading-step" id="loadingStep">Sending image to GPU server...</p>
+            <div class="loading-bar">
+                <div class="loading-progress" id="loadingProgress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
