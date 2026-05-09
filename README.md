@@ -1,5 +1,7 @@
 # Dental Disease Detection
 
+🌐 **Live Web App:** [https://shreyaslingwal.github.io/Dental_disease_detection/phase4_webapp/](https://shreyaslingwal.github.io/Dental_disease_detection/phase4_webapp/)
+
 An end-to-end multi-label dental diagnostic ensemble pipeline that detects teeth, classifies dental diseases (Caries, Deep Caries, Impacted, Periapical Lesions), visualizes clinical findings using GradCAM, and generates professional clinical reports using a fine-tuned LLaMA 3 Large Language Model. The project utilizes the DENTEX 2023 dataset structure.
 
 ##  Project Overview
@@ -67,3 +69,15 @@ The ensemble models were rigorously evaluated on the dataset. Below are the key 
 | **Impacted** | 0.9736 |
 | **Periapical Lesion** | 0.7653 |
 
+## ⚙️ How to Use the Live App
+
+Because the AI models require heavy GPU computation, the backend is hosted dynamically via Google Colab. To run the full application:
+
+1. **Start the AI Server:**
+   - Open `phase4_colab_server.py` in Google Colab (with a GPU runtime like T4).
+   - Run the notebook to load the YOLO, Swin-S, and LLaMA 3 models into memory.
+   - The final cell will generate a public **ngrok URL**.
+2. **Connect the Web App:**
+   - Open the [Live Web App](https://shreyaslingwal.github.io/Dental_disease_detection/phase4_webapp/).
+   - Paste your generated ngrok URL into the "Connect" input box at the top right of the dashboard.
+   - Upload a dental radiograph and generate a clinical report!
