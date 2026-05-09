@@ -28,6 +28,11 @@ import uvicorn
 from threading import Thread
 
 # --------------------------------------------------
+# Cell 2a: Cache HuggingFace models on Drive 
+# --------------------------------------------------
+os.environ["HF_HOME"] = "/content/drive/MyDrive/DentalScan/hf_cache"
+
+# --------------------------------------------------
 # Cell 2b: Mount Google Drive
 # --------------------------------------------------
 # from google.colab import drive
@@ -88,7 +93,7 @@ CONFIG = {
     "cam_target_layer": "backbone.layers.3.blocks.1.norm2",
 
     # Inference mode: "llm" (full LLaMA 3) or "postprocess" (rule-based, instant)
-    "inference_mode": "postprocess",
+    "inference_mode": "llm",
 
     # LLM inference settings (only used if inference_mode == "llm")
     "max_new_tokens": 512,
@@ -1229,10 +1234,15 @@ def start_server():
     """Start FastAPI server and expose via ngrok."""
     from pyngrok import ngrok
 
-    # Prompt for auth token if not set in CONFIG
+    # Get auth token: Colab Secrets > CONFIG > manual input
     auth_token = CONFIG["ngrok_auth_token"]
     if not auth_token:
-        auth_token = input("Enter your ngrok auth token: ").strip()
+        try:
+            from google.colab import userdata
+            auth_token = userdata.get('ngrok')
+            print("  ngrok token loaded from Colab Secrets.")
+        except Exception:
+            auth_token = input("Enter your ngrok auth token: ").strip()
     if auth_token:
         ngrok.set_auth_token(auth_token)
 
