@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DentiScan Pro - AI Dental Diagnostic Portal</title>
-    <meta name="description" content="AI-powered dental X-ray analysis with GradCAM visualization and clinical report generation. Professional dental disease reporting platform.">
+    <meta name="description"
+        content="AI-powered dental X-ray analysis with GradCAM visualization and clinical report generation. Professional dental disease reporting platform.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Symbols+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
@@ -182,7 +187,8 @@
             <div class="page-header">
                 <div>
                     <h2 class="page-title">Upload & Analyze</h2>
-                    <p class="page-subtitle">Securely upload radiographic imagery for automated preliminary analysis.</p>
+                    <p class="page-subtitle">Securely upload radiographic imagery for automated preliminary analysis.
+                    </p>
                 </div>
             </div>
 
@@ -197,7 +203,8 @@
                         <p class="upload-desc">Upload high-resolution Bitewing, Periapical, or Panoramic scans.</p>
                         <p class="upload-formats">Supported formats: JPEG, PNG, DICOM. Maximum file size: 50MB.</p>
                         <input type="file" id="fileInput" accept="image/*" hidden>
-                        <button class="btn-primary upload-browse-btn" onclick="document.getElementById('fileInput').click()">
+                        <button class="btn-primary upload-browse-btn"
+                            onclick="document.getElementById('fileInput').click()">
                             <span class="material-symbols-outlined">folder_open</span>
                             Browse Files
                         </button>
@@ -251,7 +258,8 @@
                         </div>
                         <div class="form-group">
                             <label for="clinicalNotes">Clinical Notes</label>
-                            <textarea id="clinicalNotes" rows="3" placeholder="Add any relevant clinical observations..."></textarea>
+                            <textarea id="clinicalNotes" rows="3"
+                                placeholder="Add any relevant clinical observations..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -383,4 +391,5 @@
 
     <script src="app.js"></script>
 </body>
+
 </html>
