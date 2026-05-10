@@ -65,7 +65,7 @@ print(f"Image size: {CONFIG['img_size']}px")
 print(f"Preprocessing: border_removal={CONFIG['remove_borders']}, CLAHE={CONFIG['apply_clahe']}")
 
 # --------------------------------------------------
-# 2. Preprocessing Functions (Paper Methods)
+# 2. Preprocessing Functions
 # --------------------------------------------------
 def remove_black_borders(img):
     """Remove black borders from panoramic X-ray (scanner artifact).
@@ -357,7 +357,7 @@ with open(data_yaml_path, "w") as f:
 print(f"\ndata.yaml saved to: {data_yaml_path}")
 
 # --------------------------------------------------
-# 8. Visualize Preprocessed Samples (Sanity Check)
+# 8. Visualize Preprocessed Samples 
 # --------------------------------------------------
 fig, axes = plt.subplots(2, 4, figsize=(20, 10))
 axes = axes.flatten()
@@ -408,7 +408,7 @@ plt.savefig(os.path.join(CONFIG["output_path"], "preprocessed_samples.png"), dpi
 plt.show()
 
 # --------------------------------------------------
-# 9. Train YOLOv8x (Paper Configuration)
+# 9. Train YOLOv8x 
 # --------------------------------------------------
 print("\n" + "=" * 60)
 print("Starting YOLOv8x Training (Paper-Aligned)")
@@ -426,7 +426,7 @@ except ImportError:
 model = YOLO(CONFIG["model_variant"])
 print(f"Loaded base model: {CONFIG['model_variant']}")
 
-# Train with paper-aligned settings
+
 results = model.train(
     data=data_yaml_path,
     epochs=CONFIG["epochs"],
@@ -439,19 +439,19 @@ results = model.train(
     name="train",
     exist_ok=True,
    
-    # We keep only light, medically-appropriate augmentations
-    hsv_h=0.0,              # No hue shift (grayscale X-rays)
-    hsv_s=0.0,              # No saturation shift
-    hsv_v=0.15,             # Slight brightness variation
-    degrees=3.0,            # Minimal rotation (dental X-rays are oriented)
-    translate=0.1,          # Small translation
-    scale=0.2,              # Moderate scale augmentation
-    fliplr=0.5,             # Horizontal flip (anatomically valid)
-    flipud=0.0,             # No vertical flip
-    mosaic=0.0,             # DISABLED - paper removes this
-    mixup=0.0,              # DISABLED - paper removes this
-    copy_paste=0.0,         # DISABLED
-    erasing=0.0,            # DISABLED
+    # We keep only light,medically-appropriate augmentations
+    hsv_h=0.0,             
+    hsv_s=0.0,             
+    hsv_v=0.15,             
+    degrees=3.0,            
+    translate=0.1,          
+    scale=0.2,              
+    fliplr=0.5,             
+    flipud=0.0,             
+    mosaic=0.0,             
+    mixup=0.0,              
+    copy_paste=0.0,       
+    erasing=0.0,            
     # ---- Dense tooth detection tuning ----
     box=7.5,                # Bbox regression loss weight
     cls=0.5,                # Classification loss weight
@@ -621,7 +621,7 @@ print(f"Best model:  {final_model_path}")
 
 
 # ==============================================================
-# PART 2: YOLO Disease Detection (DENTEX 2023 Winning Team - 2nd Ensemble Member)
+# PART 2: YOLO Disease Detection 
 # ==============================================================
 
 

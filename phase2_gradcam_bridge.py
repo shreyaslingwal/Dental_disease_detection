@@ -436,7 +436,7 @@ def threshold_heatmap(heatmap):
 
     centers = []
     bboxes = []
-    min_area = (CONFIG["img_size"] * CONFIG["img_size"]) * 0.005  # Ignore tiny noise (<0.5% of image)
+    min_area = (CONFIG["img_size"] * CONFIG["img_size"]) * 0.005  # Ignore tiny noise 
 
     for cnt in contours:
         area = cv2.contourArea(cnt)
@@ -1989,9 +1989,6 @@ if val_manifest_path:
     with open(val_manifest_path, "r") as f:
         val_manifest = json.load(f)
     # Extract image paths and ground truth
-    # Supports both formats:
-    #   New: {"img_path": ..., "teeth": [{"bbox": ..., "labels": ...}, ...]}
-    #   Legacy: {"img_path": ..., "labels": [...]}
     sample_images = []
     for entry in val_manifest:
         img_p = entry["img_path"]

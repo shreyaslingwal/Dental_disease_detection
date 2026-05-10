@@ -979,7 +979,7 @@ def check_clinical_accuracy(report, findings):
         if fdi:
             input_fdi.add(str(fdi))
 
-    # Find all 2-digit numbers in the report (likely FDI references)
+    # Find all 2-digit numbers in the report ( FDI references)
     mentioned_fdi = set(re.findall(r'\b([1-4][1-8])\b', report))
 
     # Recall: how many input teeth are mentioned in the report

@@ -1,7 +1,4 @@
 
-# --------------------------------------------------
-# Cell 2: Imports
-# --------------------------------------------------
 import os
 import io
 import json
@@ -27,19 +24,13 @@ from pydantic import BaseModel
 import uvicorn
 from threading import Thread
 
-# --------------------------------------------------
-# Cell 2a: Cache HuggingFace models on Drive 
-# --------------------------------------------------
 os.environ["HF_HOME"] = "/content/drive/MyDrive/DentalScan/hf_cache"
 
-# --------------------------------------------------
-# Cell 2b: Mount Google Drive
-# --------------------------------------------------
 # from google.colab import drive
 # drive.mount('/content/drive')
 
 # --------------------------------------------------
-# Cell 3: Configuration
+# Configuration
 # --------------------------------------------------
 CONFIG = {
     # Model paths -- Google Drive
@@ -110,7 +101,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {DEVICE}")
 
 # --------------------------------------------------
-# Cell 4: FDI Tooth Mapping & Disease Constants
+#  FDI Tooth Mapping & Disease Constants
 # --------------------------------------------------
 FDI_TEETH = {
     11: "Maxillary Right Central Incisor", 12: "Maxillary Right Lateral Incisor",
@@ -152,7 +143,7 @@ REC_MERGE = {
 }
 
 # --------------------------------------------------
-# Cell 5: Swin-S + CSRA Model Definition (synced from Phase 1/2)
+#  Swin-S + CSRA Model Definition (synced from Phase 1/2)
 # --------------------------------------------------
 class CSRA(nn.Module):
     """Class-Specific Residual Attention (inspired by DENTEX 4th place).
@@ -217,7 +208,7 @@ class DentalCNN(nn.Module):
 
 
 # --------------------------------------------------
-# Cell 6: GradCAM Implementation (Swin-compatible, synced from Phase 2)
+#  GradCAM Implementation (Swin-compatible, synced from Phase 2)
 # --------------------------------------------------
 class GradCAM:
     """GradCAM for Swin Transformer. Handles (B, N, C) token outputs
@@ -316,7 +307,7 @@ def create_heatmap_overlay(original_img, cam, alpha=0.5):
 
 
 # --------------------------------------------------
-# Cell 7: Post-Processing (Rule-Based Report Generator)
+#  Post-Processing (Rule-Based Report Generator)
 # --------------------------------------------------
 def build_clinical_impression(grouped_findings):
     """Generate specific clinical impressions based on disease patterns."""
@@ -454,7 +445,7 @@ def postprocess_report(findings):
 
 
 # --------------------------------------------------
-# Cell 8: Image Preprocessing (albumentations, matches Phase 1/2 val_transform)
+#  Image Preprocessing (albumentations, matches Phase 1/2 val_transform)
 # --------------------------------------------------
 val_transform = A.Compose([
     A.Resize(CONFIG["img_size"], CONFIG["img_size"]),
@@ -464,7 +455,7 @@ val_transform = A.Compose([
 
 
 # --------------------------------------------------
-# Cell 9: Load Models
+#  Load Models
 # --------------------------------------------------
 print("Loading Swin-S + CSRA model...")
 vision_model = DentalCNN(
@@ -541,7 +532,7 @@ else:
 
 
 # --------------------------------------------------
-# Cell 10: WBF Ensemble Utilities (ported from Phase 2)
+#  WBF Ensemble Utilities (ported from Phase 2)
 # --------------------------------------------------
 def map_to_quadrant(x, y, w=336, h=336):
     """Map pixel coordinates to FDI dental quadrant (1-4)."""
@@ -763,7 +754,7 @@ def build_bridge_prompt(findings):
 
 
 # --------------------------------------------------
-# Cell 7b: LLM Report Generation (used when inference_mode == "llm")
+#  LLM Report Generation (used when inference_mode == "llm")
 # --------------------------------------------------
 SYSTEM_MESSAGE = (
     "You are a dental radiology assistant. You generate structured clinical "
@@ -843,7 +834,7 @@ def generate_report_llm(prompt_text, findings):
 
 
 # --------------------------------------------------
-# Cell 11: Full Inference Pipeline
+#  Full Inference Pipeline
 # --------------------------------------------------
 def run_inference(image: Image.Image):
     """Full WBF ensemble pipeline (DENTEX 2023 winner approach).
@@ -1035,10 +1026,6 @@ def run_inference(image: Image.Image):
         "badge": None,
     })
 
-    # Panels 2+: Per-class composite GradCAM overlays (Phase 2 approach)
-    # For each finding, extract the disease bbox crop from the display image,
-    # run GradCAM on the crop, and composite back onto the full-image canvas.
-    # This produces precise, localized activations (not diffuse full-image heatmaps).
     composite_heatmaps = {}
     if findings:
         for f in findings:
@@ -1069,7 +1056,7 @@ def run_inference(image: Image.Image):
             except Exception:
                 pass  # GradCAM is optional, never blocks findings
 
-    # Keep only heatmaps with actual activations
+    #  only heatmaps with actual activations
     composite_heatmaps = {k: v for k, v in composite_heatmaps.items() if v.max() > 0.01}
 
     # Build GradCAM overlay panels from composite heatmaps
@@ -1197,7 +1184,7 @@ def run_inference(image: Image.Image):
 
 
 # --------------------------------------------------
-# Cell 11: FastAPI Application
+#  FastAPI Application
 # --------------------------------------------------
 app = FastAPI(title="DentalScan AI - Inference Server")
 
@@ -1228,7 +1215,7 @@ async def analyze_xray(file: UploadFile = File(...)):
 
 
 # --------------------------------------------------
-# Cell 12: Start Server with ngrok
+#  Start Server with ngrok
 # --------------------------------------------------
 def start_server():
     """Start FastAPI server and expose via ngrok."""
