@@ -14,6 +14,23 @@ The AI diagnostic pipeline is split into logical phases to optimize computationa
 4. **Phase 3 - Clinical Report Generation:** A fine-tuned LLaMA 3 model (via LoRA adapter) takes the localized disease findings and outputs a natural language, professional clinical diagnostic report.
 5. **Phase 4 - Deployment:** A FastAPI server (hosted on Google Colab, tunneled via ngrok) serving a modern web application for an interactive, horizontally scrollable dashboard.
 
+##  DENTEX 2023 Dataset Overview
+
+The DENTEX dataset comprises panoramic dental X-rays obtained from three different institutions using standard clinical conditions but varying equipment and imaging protocols, resulting in diverse image quality reflecting heterogeneous clinical practice. The dataset includes X-rays from patients aged 12 and above, randomly selected from the hospital's database to ensure patient privacy and confidentiality.
+
+To enable effective use of the FDI system, the dataset is hierarchically organized into three types of data:
+
+- **(a)** 693 X-rays labeled for quadrant detection and quadrant classes only.
+- **(b)** 634 X-rays labeled for tooth detection with quadrant and tooth enumeration classes.
+- **(c)** 1005 X-rays fully labeled for abnormal tooth detection with quadrant, tooth enumeration, and diagnosis classes.
+
+The diagnosis class includes four specific categories: **caries, deep caries, periapical lesions, and impacted teeth**. An additional challenge identified and addressed during the training of the models is the inherent class imbalance present within these pathology categories across the 3,529 total disease tooth crops (from 678 unique images):
+## Distribution of Tooth Level Diseases labels in the dataset:
+- **Caries:** 2,189 samples
+- **Impacted:** 604 samples
+- **Deep Caries:** 578 samples
+- **Periapical Lesion:** 158 samples
+
 ## 📊 Performance Results
 
 The ensemble models were rigorously evaluated on the dataset. Below are the key performance metrics across the different architectures:
